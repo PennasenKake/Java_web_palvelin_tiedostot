@@ -1,0 +1,52 @@
+TARKISTA TEHTÄVÄT TÄHÄN MENNESSÄ TEHTÄVÄÄN KOLME ASTI; 
+
+
+
+
+Tee web-pohjainen tietokantapohjainen tiedostopalvelin kuvatiedostoille. 
+Yksittäistä pistettä varten täytyy olla 
+
+1. Tee web-pohjainen käyttöliittymä, joka lähettää tiedoston tekemällesi palvelimelle 
+ja palvelimen pitää reagoida lähetettyyn dataan. 
+Tietokantaan tallennuksen ei tarvitse toimia tätä pistettä varten. 
+Käyttöliittymä pitää olla haettavissa http://localhost:8080 osoitteesta. 
+
+OK, olen ottanut huomioon, että tehtävässä käytetään MONGODB tietokantapalvelinta
+
+2. Tee entiteetti ja repository kuvatiedostoa varten. 
+Entiteetillä täytyy olla vähintään tieto kuvasta(SQL:n Blob-tyyppi) ja omistajasta.
+
+OK
+
+3. Palvelin pystyy tallentamaan käyttäjän lähettämän tiedoston tietokantaan. 
+Ainoastaan kuvatiedostot ovat sallittuja tiedostoja.
+
+OK, tässä vaiheessa index.html sivu muokattu, että ladatut kuvat tulevat näkyviin
+mongodb tietokantapalvelimen puolella voi poistaa kuvia, 
+testaus vaiheessa seilaimen päässä saan "Only image files are allowed", kun koittaa ladata muita tiedostoja, kuin kuvia
+
+4. Palvelimelta voi hakea listan kuvatiedostoista.
+
+OK, voi hakea kuvia 
+hakeminen id.llä onnistui osoitteella http://localhost:8080/files/image/67c31995da48ac56094bebb6 (id käyttää mongodb muotoa)
+
+OK, osoitteessa http://localhost:8080/files/list saadaan kuvat json muodossa näkymään
+
+5. Voit poistaa tiedoston palvelimelta.
+
+OK, http://localhost:8080/files/delete/{tiedostonnimi}
+
+6. Palvelin pystyy palauttamaan käyttäjän pyytämän tiedoston tietokannasta.
+
+OK osoitteella http://localhost:8080/files?fileName=ankka.jpg lataus onnistui
+
+
+BONUS: käytä jotain muuta tietokantaa kuin Mysql, MariaDB tai H2. 
+ONNISTUI YHDISTÄMINEN MONGODB.N KANSSA
+
+BONUS2: Kustomoitu virhesivu
+OK LÖYTYY osoitteessa http://localhost:8080/error.html , sisältää puutteita
+
+Voit hyödyntää netistä löytämiäsi materiaaleja. 
+Esimerkiksi https://www.bezkoder.com/spring-boot-upload-file-database/ on hyvä tutoriaali, 
+josta voi lähteä liikkeelle tiedoston tallentamiseksi tietokantaan.

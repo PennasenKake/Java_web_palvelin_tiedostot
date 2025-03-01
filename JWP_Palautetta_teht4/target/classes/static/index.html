@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiedoston lähetys</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Lähetä tiedosto</h2>
+        <!-- Lomake tiedoston lähettämiseen palvelimelle -->
+        <form id="uploadForm" action="http://localhost:8080/files/upload" method="post" enctype="multipart/form-data">
+            <div class="file-input-container">
+                <!-- Tiedoston valintaelementti -->
+                <input type="file" id="fileInput" name="file" required>
+                <label for="fileInput">Valitse tiedosto</label>
+            </div>
+            <!-- Näyttää valitun tiedoston nimen -->
+            <div id="fileStatus">Tiedostoa ei valittu</div>
+            <button type="submit">Lähetä</button>
+        </form>
+        <div id="response"></div> <!-- Palvelimen vastauksen näyttöalue -->
+        <h2>Ladatut kuvat</h2>
+        <!-- Lista, johon ladataan palvelimelta haetut kuvat -->
+        <div id="imageList" class="image-list"></div>
+    </div>
+
+    <script>
+        // Päivittää tiedoston nimen käyttöliittymään, kun tiedosto valitaan
+        document.getElementById('fileInput').addEventListener('change', function() {
+            const fileStatus = document.getElementById('fileStatus');
+            if (this.files.length > 0) {
+                fileStatus.textContent = this.files[0].name;
+            } else {
+                fileStatus.textContent = 'Tiedostoa ei valittu';
+            }
+        });
+
+        // Hae ja näytä kuvat
+        fetch('http://localhost:8080/files/list')
+        .then(response => response.json())
+        .then(files => {
+            const imageList = document.getElementById('imageList');
+            imageList.innerHTML = ''; // Tyhjennä lista
+            files.forEach(file => {
+                const container = document.createElement('div'); // Div jokaiselle kuvalle ja nimelle
+                container.style.display = 'inline-block'; // Kuvien asettelu vierekkäin
+                container.style.margin = '10px'; // Väliä kuvien välille
+
+                const img = document.createElement('img');
+                img.src = `http://localhost:8080/files/image/${file.id}`;
+                img.alt = file.fileName;
+                img.style.maxWidth = "120px";
+
+                const name = document.createElement('p'); // Kuvan nimi
+                name.textContent = file.fileName;
+                name.style.textAlign = 'center';
+
+                container.appendChild(img);
+                container.appendChild(name);
+                imageList.appendChild(container);
+            });
+        })
+        .catch(error => console.error('Virhe kuvien haussa:', error));
+        
+
+            
+        // Päivitä kuvat latauksen jälkeen
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById('response').textContent = result;
+                // Päivitä kuvat heti latauksen jälkeen
+                fetch('http://localhost:8080/files/list')
+                    .then(response => response.json())
+                    .then(files => {
+                        const imageList = document.getElementById('imageList');
+                        imageList.innerHTML = '';
+                        files.forEach(file => {
+                            const img = document.createElement('img');
+                            img.src = `http://localhost:8080/files/image/${file.id}`;
+                            img.alt = file.fileName;
+                            img.style.maxWidth = "120px";
+                            imageList.appendChild(img);
+                        });
+                    });
+            })
+            .catch(error => console.error('Virhe tiedoston latauksessa:', error));
+        });
+        
+    </script>
+</body>
+</html>
